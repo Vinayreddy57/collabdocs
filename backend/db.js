@@ -10,10 +10,9 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Load the downloaded Supabase SSL certificate
-const certificatePath = path.join(
-  __dirname,
-  "supabase-ca.crt"
-);
+const certificatePath =
+  process.env.SUPABASE_CA_PATH ||
+  path.join(__dirname, "supabase-ca.crt");
 
 if (!fs.existsSync(certificatePath)) {
   throw new Error("Supabase SSL certificate not found");
