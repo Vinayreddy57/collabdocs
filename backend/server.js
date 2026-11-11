@@ -514,10 +514,21 @@ app.post(
 // ========================================
 
 app.use((error, req, res, next) => {
-  console.error(
-    "CollabDocs error:",
-    error.message
-  );
+
+  const getErrorDetails = (err) => ({
+    name: err?.name ?? null,
+    code: err?.code ?? null,
+    errno: err?.errno ?? null,
+    syscall: err?.syscall ?? null
+  });
+
+  console.error("CollabDocs error details:", {
+    ...getErrorDetails(error),
+    cause: getErrorDetails(error?.cause),
+    nestedErrors: Array.isArray(error?.errors)
+      ? error.errors.map(getErrorDetails)
+      : []
+  });
 
   if (error instanceof multer.MulterError) {
     return res.status(400).json({
